@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools", "wheel", "Cython"]
+
+[project]
+name = "python-shared-ndarray"
+version = "0.1.0"
+authors = [
+    { name="example", email="example@users.noreply.github.com" },
+]
+description = "A pickleable wrapper for sharing numpy ndarray between processes"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy",
+    "cython",
+]
+license = {file = "LICENSE"}
+
+[project.urls]
+Homepage = "https://github.com/pypa/sampleproject"
+Issues = "https://github.com/pypa/sampleproject/issues"
+

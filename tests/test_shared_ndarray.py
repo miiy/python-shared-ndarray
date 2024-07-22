@@ -117,6 +117,19 @@ class SharedNDArrayTestCase(unittest.TestCase):
         arr_recv.close()
         arr_recv.unlink()
 
+    def test_shared_ndarray_update(self):
+        data1 = np.ones((1920, 1080, 3), dtype=np.uint8)
+        data2 = np.array([[1, 2], [2, 3]])
+        arr = sn.from_numpy(data1=data1, data2=data2)
+
+        data3 = np.array([[2, 3], [3, 4]])
+        arr.set("data2", data3)
+        arr_data2 = arr.get_numpy("data2")
+
+        self.assertTrue(np.array_equal(data3, arr_data2))
+        arr.close()
+        arr.unlink()
+
     def test_ndarray_mp_queue(self):
         q = mp.Queue()
         p1 = mp.Process(target=produce, args=(q,))

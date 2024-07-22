@@ -73,6 +73,13 @@ class SharedNDArray:
             if meta.key == key:
                 return bytes(self._shm.buf[meta.start_pos:meta.start_pos + meta.nbytes])
 
+    def set(self, key: str, new_arr: np.ndarray) -> None:
+        for meta in self._meta_list:
+            if meta.key == key:
+                if meta.nbytes != new_arr.nbytes:
+                    raise ValueError("new_arr size must be same as original size")
+                self._shm.buf[meta.start_pos:meta.start_pos + meta.nbytes] = new_arr.tobytes()
+
     def get_numpy(self, key: str = "default") -> np.ndarray:
         for meta in self._meta_list:
             if meta.key == key:

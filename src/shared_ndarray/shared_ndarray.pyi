@@ -1,22 +1,16 @@
 import numpy as np
+from typing import Optional
 from multiprocessing.shared_memory import SharedMemory
 
-
-def from_numpy(arr: np.ndarray) -> SharedNDArray: ...
-
-
 class SharedNDArray:
-    _shape: tuple
-    _dtype: np.dtype
+    _meta_list: list
     _shm: SharedMemory
-    _ndarray: np.ndarray
 
-    def __init__(self, shape: tuple, dtype: np.dtype, name: str | None = None) -> None:
+    def __init__(self, meta_list: list, name: str | None = None) -> None:
         """Creates a new SharedNDArray.
 
         Args:
-            shape: Shape of the wrapped ndarray.
-            dtype: Data type of the wrapped ndarray.
+            meta_list: list of Meta.
             name: Optional; the filesystem path of the shared memory.
 
         Returns:
@@ -25,12 +19,16 @@ class SharedNDArray:
         ...
 
     @classmethod
-    def from_numpy(cls, ndarray: np.ndarray) -> "SharedNDArray": ...
+    def from_numpy(cls, arr: Optional[np.ndarray] = None, **kwargs) -> "SharedNDArray": ...
 
-    def numpy(self) -> np.ndarray: ...
+    def get(self, key: str = "default") -> bytes: ...
 
-    def clone(self) -> np.ndarray: ...
+    def get_numpy(self, key: str = "default") -> np.ndarray: ...
+
+    def clone_numpy(self, key: str = "default") -> np.ndarray: ...
 
     def close(self) -> None: ...
 
     def unlink(self) -> None: ...
+
+def from_numpy(arr: Optional[np.ndarray] = None, **kwargs) -> SharedNDArray: ...

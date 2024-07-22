@@ -68,7 +68,7 @@ def consumer_with_copy(q: mp.Queue, shared: bool = False):
         except queue.Empty:
             break
         if shared:
-            arr_copy = arr.clone()
+            arr_copy = arr.clone_numpy()
             arr.close()
             arr.unlink()
         else:
@@ -81,6 +81,41 @@ def consumer_with_copy(q: mp.Queue, shared: bool = False):
 
 
 class SharedNDArrayTestCase(unittest.TestCase):
+
+    def test_shared_ndarray_basic(self):
+        q = mp.Queue()
+
+        # put
+        data = np.ones((1920, 1080, 3), dtype=np.uint8)
+        arr = sn.from_numpy(data)
+        q.put(arr)
+
+        # get
+        arr_recv = q.get()
+        data2 = arr_recv.get_numpy()
+        self.assertTrue(np.array_equal(data, data2))
+
+        arr_recv.close()
+        arr_recv.unlink()
+
+    def test_shared_ndarray_multi(self):
+        q = mp.Queue()
+
+        # put
+        data1 = np.ones((1920, 1080, 3), dtype=np.uint8)
+        data2 = np.array([[1, 2], [2, 3]])
+        arr = sn.from_numpy(data1=data1, data2=data2)
+        q.put(arr)
+
+        # get
+        arr_recv = q.get()
+        data1_1 = arr_recv.get_numpy("data1")
+        data2_1 = arr_recv.get_numpy("data2")
+        self.assertTrue(np.array_equal(data1, data1_1))
+        self.assertTrue(np.array_equal(data2, data2_1))
+
+        arr_recv.close()
+        arr_recv.unlink()
 
     def test_ndarray_mp_queue(self):
         q = mp.Queue()
@@ -110,6 +145,40 @@ class SharedNDArrayTestCase(unittest.TestCase):
         p2.start()
         p1.join()
         p2.join()
+        self.assertTrue(True)
+
+    def test_shared_ndarray_list(self):
+        mp.set_start_method('spawn')
+        image_data = np.ones((1080, 1920, 3), dtype=np.uint8)
+        wav_frame_num = int(44100 / 25)
+        audio_data = np.zeros(wav_frame_num, dtype=np.int16)
+
+        q = mp.Queue()
+
+        start_time = time.time()
+        for i in range(250):
+            send_packet = sn.from_numpy(image=image_data, audio=audio_data)
+            q.put(send_packet)
+            # put time
+            if i % 25 == 0:
+
+                total_time = time.time() - start_time
+                start_time = time.time()
+                print(f"put time: {total_time}")
+
+        start_time = time.time()
+        for i in range(250):
+            recv_packet = q.get()
+            image_byte = recv_packet.get("image")
+            audio_byte = recv_packet.get("audio")
+            recv_packet.close()
+            recv_packet.unlink()
+            # get time
+            if i % 25 == 0:
+                total_time = time.time() - start_time
+                start_time = time.time()
+                print(f"get time: {total_time}")
+
         self.assertTrue(True)
 
 

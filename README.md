@@ -18,7 +18,7 @@ q.put(arr)
 
 # get
 arr: sn.SharedNDArray = q.get()
-arr_copy = arr.clone()
+arr_copy = arr.clone_numpy()
 arr.unlink()
 ```
 

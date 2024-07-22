@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel", "Cython"]
 
 [project]
 name = "python-shared-ndarray"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
     { name="example", email="example@users.noreply.github.com" },
 ]

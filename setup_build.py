@@ -10,7 +10,7 @@ extensions = [
 
 setup(
     name="shared_ndarray",
-    version="0.1.0",
+    version="0.2.0",
     package_dir={"": "build"},
     packages=find_packages(where="src"),
     package_data={"shared_ndarray": ["*.so", "*.pyi"]},

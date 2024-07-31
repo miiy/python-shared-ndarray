@@ -6,7 +6,7 @@ class SharedNDArray:
     _meta_list: list
     _shm: SharedMemory
 
-    def __init__(self, meta_list: list, name: str | None = None) -> None:
+    def __init__(self, meta_list: list, name: Optional[str] = None) -> None:
         """Creates a new SharedNDArray.
 
         Args:

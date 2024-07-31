@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Optional
+from typing import Optional, List
 from multiprocessing.shared_memory import SharedMemory
 
 """
@@ -30,8 +30,7 @@ class Meta:
 
 
 class SharedNDArray:
-    def __init__(self, meta_list: list[Meta],
-                 name: str | None = None) -> None:
+    def __init__(self, meta_list: List[Meta], name: Optional[str] = None) -> None:
 
         self._meta_list = meta_list
         total_size = sum(meta.nbytes for meta in self._meta_list)
@@ -52,7 +51,7 @@ class SharedNDArray:
             kwargs["default"] = arr
 
         # key, value
-        meta_list: list[Meta] = []
+        meta_list: List[Meta] = []
         start_pos = 0
         for key, value in kwargs.items():
             if not isinstance(value, np.ndarray):
